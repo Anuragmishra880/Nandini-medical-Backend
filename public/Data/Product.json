@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "title": "Diclofenec 50mg Tablet",
+        "price": "$ 5",
+        "image": "/public/images/Bones-&-Muscles/diclofenac.webp"
+    },
+    {
+        "id": 2,
+        "title": "Health OK ",
+        "price": "$ 30",
+        "image": "/public/images/Bones-&-Muscles/HealthOk.jpeg"
+    },
+    {
+        "id": 3,
+        "title": "omega 3 ",
+        "price": "$ 20",
+        "image": "/public/images/Bones-&-Muscles/omega.jpg"
+    },
+    {
+        "id": 4,
+        "title": "Paracetamol 500mg ",
+        "price": "$ 16",
+        "image": "/public/images/Bones-&-Muscles/paracetamol.jpg"
+    },
+    {
+        "id": 5,
+        "title": " ",
+        "price": "$ 24",
+        "image": "/public/images/derma/61WxXa4FfuL._SL1500_.jpg"
+    },
+    {
+        "id": 6,
+        "title": " ",
+        "price": "$ 26",
+        "image": "/public/images/derma/71FG+KgB9UL._SL1500_.jpg"
+    },
+    {
+        "id": 7,
+        "title": " ",
+        "price": "$ 35",
+        "image": "/public/images/derma/90173073_XL1_20230530.webp"
+    },
+    {
+        "id": 8,
+        "title": "Mederma  ",
+        "price": "$ 16",
+        "image": "/public/images/derma/mederma.webp"
+    },
+    {
+        "id": 9,
+        "title": " ",
+        "price": "$ 30",
+        "image": "/public/images/heart/1669878155374-187.jpg"
+    },
+    {
+        "id": 10,
+        "title": " ",
+        "price": 300,
+        "image": "/public/images/heart/amlip-tablets.jpg"
+    },
+    {
+        "id": 11,
+        "title": "Telvas 40mg ",
+        "price": "$ 20",
+        "image": "/public/images/heart/telvas-40.avif"
+    },
+    {
+        "id": 12,
+        "title": "",
+        "price": "$ 16",
+        "image": "/public/images/heart/NB-SWI-1011-01-01.jpg"
+    }
+]

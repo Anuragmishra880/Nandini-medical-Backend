@@ -1,0 +1,36 @@
+          ┌─────────────────────────────┐
+          │         Frontend             │
+          │   React + Redux (Shop UI)    │
+          │   - Product List             │
+          │   - Search/Filter            │
+          │   - Cart                     │
+          └───────────────▲─────────────┘
+                          │ API Calls (fetch/axios)
+                          │
+          ┌───────────────┴─────────────┐
+          │          Backend             │
+          │   Node.js + Express          │
+          │   ┌───────────────────────┐ │
+          │   │ Routes (/api/products)│ │
+          │   └───────────▲───────────┘ │
+          │               │              │
+          │   ┌───────────┴───────────┐ │
+          │   │   Controllers         │ │
+          │   │   - getProducts       │ │
+          │   │   - addProduct        │ │
+          │   └───────────▲───────────┘ │
+          │               │              │
+          │   ┌───────────┴───────────┐ │
+          │   │   Models (Mongoose)   │ │
+          │   │   Product Schema      │ │
+          │   └───────────▲───────────┘ │
+          │               │              │
+          └───────────────┴─────────────┘
+                          │
+          ┌───────────────┴─────────────┐
+          │         Database             │
+          │        MongoDB               │
+          │   - Products Collection      │
+          │   - Fields: p_id, title,     │
+          │     price, category, image   │
+          └─────────────────────────────┘
