@@ -1,12 +1,12 @@
 const asyncHandler = (requestHandler) => {
-   return async (req, res, next) => {
+    return async (req, res, next) => {
         try {
-          await requestHandler(req, res, next)
+            await requestHandler(req, res, next)
         }
         catch (error) {
-            res.status(err.code || 500).json({
+            res.status(error.statusCode || 500).json({
                 success: false,
-                message: err.message
+                message: error.message
             })
         }
     }
