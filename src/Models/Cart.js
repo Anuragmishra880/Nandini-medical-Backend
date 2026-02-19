@@ -1,8 +1,10 @@
 import mongoose from 'mongoose'
-const cartSchema = mongoose.Schema({
-    userId: {
+const cartSchema = new mongoose.Schema({
+    user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        required: true,
+        unique: true
     },
     items: [
         {
@@ -12,8 +14,11 @@ const cartSchema = mongoose.Schema({
             },
 
             quantity: {
-                type: Number
-            }
+                type: Number,
+                default: 1,
+                min: 1,
+            },
+
         }
     ],
     totalQuantity: {
@@ -21,8 +26,24 @@ const cartSchema = mongoose.Schema({
     },
     totalPrice: {
         type: Number
-    }
-});
+    },
 
-const Cart = module.exports('Cart', cartSchema)
-module.exports = Cart
+},
+    { timestamps: true },
+);
+cartSchema.pre("save", async function (next) {
+    await this.populate("items.productId");
+
+    this.totalQuantity = 0;
+    this.totalPrice = 0;
+    this?.items?.forEach((item) => {
+        this.totalQuantity += item.quantity;
+        this.totalPrice += item.quantity * item.productId.productPrice;
+    });
+
+
+
+    next();
+})
+export const Cart = mongoose.model('Cart', cartSchema)
+

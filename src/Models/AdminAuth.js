@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-const userSchema = new mongoose.Schema({
-    userName: {
+const adminSchema = new mongoose.Schema({
+    adminName: {
         type: String,
         required: true,
         unique: true,
@@ -23,13 +23,20 @@ const userSchema = new mongoose.Schema({
         required: true,
 
     },
-    coverImage: {
-        type: String,
+     adminImage: {
+        url: {
+            type: String,
+            required: true
+        },
+        publicId: {
+            type: String,
+            required: true
+        }
     },
     role: {
         type: String,
-        enum: ["admin", "customer"],
-        default: "customer"
+        enum: ["admin", "seller"],
+        default: "admin"
     },
     refreshToken: {
         type: String,
@@ -40,20 +47,20 @@ const userSchema = new mongoose.Schema({
         timestamps: true
     }
 );
-userSchema.pre('save', async function (next) {
+adminSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next()
     this.password = await bcrypt.hash(this.password, 12)
     next()
 })
 
-userSchema.methods.isPasswordCorrect = async function (password) {
+adminSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
 }
-userSchema.methods.generateAccessToken =function () {
+adminSchema.methods.generateAccessToken =function () {
     return  jwt.sign(
         {
             id: this._id,
-            userName: this.userName,
+            adminName: this.adminName,
             email: this.email,
             role: this.role,
         },
@@ -64,7 +71,7 @@ userSchema.methods.generateAccessToken =function () {
 
     )
 }
-userSchema.methods.generateRefreshToken = function () {
+adminSchema.methods.generateRefreshToken = function () {
     return  jwt.sign(
         {
             id: this._id,
@@ -77,4 +84,4 @@ userSchema.methods.generateRefreshToken = function () {
 
     )
 }
-export const User = mongoose.model("User", userSchema);
+export const Admin = mongoose.model("Admin", adminSchema);

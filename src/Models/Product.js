@@ -1,29 +1,34 @@
 // const { default: mongoose, Types } = require('mongoose')
 import mongoose from 'mongoose'
 const ProductSchema = new mongoose.Schema({
-    product_id: {
+   
+    productTitle: {
         type: String,
         required: true
     },
-    product_Title: {
-        type: String,
-        required: true
-    },
-    product_Image: {
+    productImage: {
         url: {
             type: String,
             required: true
         },
-        public_id: {
+        publicId: {
             type: String,
             required: true
         }
     },
-    product_Price: {
+    productStock: {
         type: String,
+        // required: true
+    },
+    productPrice: {
+        type: Number,
         required: true,
     },
-    product_description: {
+    productDescription: {
+        type: String,
+        required: true
+    },
+    category: {
         type: String,
         required: true
     }
