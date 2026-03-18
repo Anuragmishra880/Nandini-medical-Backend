@@ -7,7 +7,9 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
 
   // const token = req.cookies?.accessToken // if we use only website
   try {
-    const token = req.cookies?.accessToken || req.header('Authorization')?.replace("Bearer ", "") // it works for website and Apps both
+    const token =
+      req.cookies?.userAccessToken ||
+      req.headers.authorization?.replace("Bearer ", "") // it works for website and Apps both
     if (!token) {
       throw new ApiError(401, "Unauthorized request")
     }

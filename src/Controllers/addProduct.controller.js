@@ -48,23 +48,25 @@ const AddProduct = asyncHandler(async (req, res) => {
 
   await newProduct.save();
 
-  res.status(201).json(new ApiResponse(200, newProduct, "Product Added Successfully"));
+  res.status(201).json(new ApiResponse(201, newProduct, "Product Added Successfully"));
 });
 
 
 
 const updateProduct = asyncHandler(async (req, res) => {
-  const { productStock, productTitle, productPrice, productDescription } = req.body
+  const { productStock, productTitle, productPrice, productDescription, category } = req.body
   const { id } = req.params
+  console.log(id)
   if (!id) {
     throw new ApiError(401, "Product ID is required for update")
   }
   const product = await Product.findById(id)
   if (!product) {
-    throw new ApiError(401, "Product not found")
+    throw new ApiError(400, "Product not found")
   }
 
   const productImageLocalPath = req.file?.path.replace(/\\/g, "/");
+
   if (productImageLocalPath) {
     const uploadedImage = await uploadOnCloudinary(productImageLocalPath);
 
@@ -79,15 +81,25 @@ const updateProduct = asyncHandler(async (req, res) => {
       };
     }
   }
-  if (productTitle !== undefined)
+  if (productTitle) {
     product.productTitle = productTitle;
-  if (productStock !== undefined)
-    product.productStock = productStock
-  if (productPrice !== undefined)
-    product.productPrice = productPrice;
-  if (productDescription !== undefined)
-    product.productDescription = productDescription;
+  }
 
+  if (productStock) {
+    product.productStock = productStock;
+  }
+
+  if (productPrice) {
+    product.productPrice = productPrice;
+  }
+
+  if (productDescription) {
+    product.productDescription = productDescription;
+  }
+
+  if (category) {
+    product.category = category;
+  }
   await product.save();
 
   return res.status(200)
@@ -97,7 +109,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
 const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params
-  console.log(id)
+
   if (!id) {
     throw new ApiError(400, "Product ID is required for update")
   }
@@ -106,7 +118,9 @@ const deleteProduct = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Product not found")
   }
 
-  await cloudinary.uploader.destroy(product.productImage.publicId)
+  // if (product.productImage?.publicId) {
+  //   await cloudinary.uploader.destroy(product.productImage.publicId);
+  // }
   await product.deleteOne()
   return res.status(200).json(
     new ApiResponse(200, {}, "Product deleted successfully")

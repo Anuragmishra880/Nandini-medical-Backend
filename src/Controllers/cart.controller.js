@@ -8,16 +8,19 @@ const AddToCart = asyncHandler(async (req, res) => {
 
 
   const { productId, quantity = 1 } = req.body
-  // if (quantity < 1) {
-  //   throw new ApiError(400, "Invalid quantity");
-  // }
-  const product = await Product.findById( productId)
+  if (quantity < 1) {
+    throw new ApiError(400, "Invalid quantity");
+  }
+  if (!productId) {
+    throw new ApiError(400, "ProductId required");
+  }
+  const product = await Product.findById(productId)
 
   if (!product) {
     throw new ApiError(404, "Product not found")
   }
   let cart = await Cart.findOne({ user: req.user.id })
-  
+
 
   if (!cart) {
     cart = await Cart.create({

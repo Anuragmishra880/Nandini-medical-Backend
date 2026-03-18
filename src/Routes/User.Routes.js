@@ -1,5 +1,5 @@
 import express from 'express'
-import { getAllUsers, loginHandler, logoutHandler, refreshToken, registerUser } from '../Controllers/user.controller.js'
+import { getAllUsers, getCurrentUser, loginHandler, logoutHandler, userRefreshToken, registerUser } from '../Controllers/user.controller.js'
 // import { upload } from '../Middlewares/multer.js'
 const router = express.Router()
 import { verifyJWT } from '../Middlewares/auth.middleware.js'
@@ -19,6 +19,7 @@ import { verifyJWT } from '../Middlewares/auth.middleware.js'
 router.post("/register", registerUser)
 router.post("/login", loginHandler)
 router.post("/logout", verifyJWT, logoutHandler)
-router.post("/refresh-token", refreshToken)
+router.post("/refresh-token", userRefreshToken)
 router.get('/',getAllUsers)
+router.get('/me',verifyJWT,getCurrentUser)
 export default router

@@ -14,7 +14,7 @@ const emailValidator = (email) => {
 }
 
 // token Generator Function 
-const generateAccessTokenAndRefreshToken = async (userId) => {
+const generateAccessTokenAndRefreshToken = async (adminId) => {
   try {
     const admin = await Admin.findById(adminId)
     const accessToken = await admin.generateAccessToken()
@@ -26,6 +26,29 @@ const generateAccessTokenAndRefreshToken = async (userId) => {
     throw new ApiError(500, "something went wrong when generating Access token or refresh token")
   }
 }
+
+// checkAdminExist.js
+
+
+const checkAdminExist = asyncHandler(async (req, res) => {
+  const { email, adminName } = req.body;
+
+  if (!(email || adminName)) {
+    return res.status(400).json(new ApiResponse(400, {}, "Email or AdminName required"));
+  }
+
+  const admin = await Admin.findOne({
+    $or: [{ email }, { adminName }]
+  });
+
+  if (admin) {
+    return res.status(200).json(new ApiResponse(200, { exists: true }, "Admin already registered"));
+  } else {
+    return res.status(200).json(new ApiResponse(200, { exists: false }, "Admin not found"));
+  }
+});
+
+
 const registerAdmin = asyncHandler(async (req, res) => {
 
   const { adminName, email, password } = req.body
@@ -51,8 +74,8 @@ const registerAdmin = asyncHandler(async (req, res) => {
   const admin = await Admin.create({
     adminName: adminName.toLowerCase(),
     adminImage: {
-      url: uploadedImage.secure_url,
-      publicId: uploadedImage.public_id
+      url: coverImage.secure_url,
+      publicId: coverImage.public_id
     },
     email,
     password,
@@ -75,8 +98,8 @@ const registerAdmin = asyncHandler(async (req, res) => {
 const adminLoginHandler = asyncHandler(async (req, res) => {
 
   const { adminName, email, password } = req.body
-  if (!(email || adminName)) {
-    throw new ApiError(400, "  Username or password is required");
+  if (!(email || adminName) || !password) {
+    throw new ApiError(400, "  Admin Name or password is required");
   }
   const admin = await Admin.findOne(
     {
@@ -93,16 +116,15 @@ const adminLoginHandler = asyncHandler(async (req, res) => {
 
   const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(admin._id)
 
-  const loggedInAdmin = await User.findById(admin._id).select('-password -refreshToken')
+  const loggedInAdmin = await Admin.findById(admin._id).select('-password -refreshToken')
   const options = {
     httpOnly: true,
     secure: false,
 
   }
-  console.log(req.cookies);
-  console.log(req.adminName);
+  // console.log(req.adminName);
 
-  return res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken", refreshToken, options).json(new ApiResponse(200, {
+  return res.status(200).cookie("adminAccessToken", accessToken, options).cookie("adminRefreshToken", refreshToken, options).json(new ApiResponse(200, {
     admin: loggedInAdmin, accessToken, refreshToken
 
   },
@@ -124,18 +146,18 @@ const adminLogoutHandler = asyncHandler(async (req, res) => {
   }
   return res
     .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
+    .clearCookie("adminAccessToken", options)
+    .clearCookie("adminRefreshToken", options)
     .json(new ApiResponse(200, {}, "Logout successFully "))
 })
 
-const refreshToken = asyncHandler(async (req, res) => {
-  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+const adminRefreshToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken = req.cookies?.adminRefreshToken || req.body.refreshToken
   if (!incomingRefreshToken) {
     throw new ApiError(401, "unauthorized request")
   }
   const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
-  const admin = await Admin.findById(decodedToken._id)
+  const admin = await Admin.findById(decodedToken.id)
   if (!admin) {
     throw new ApiError(401, "invalid refresh token")
   }
@@ -143,18 +165,23 @@ const refreshToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, ' refresh token is expired')
   }
 
-  const { accessToken, newRefreshToken } = await generateAccessTokenAndRefreshToken(admin._id)
+  const { accessToken, refreshToken: newRefreshToken } = await generateAccessTokenAndRefreshToken(admin._id)
   const options = {
     httpOnly: true,
     secure: false,
 
   }
-  return res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken", newRefreshToken, options).json(new ApiResponse(200, {
+  return res.status(200).cookie("adminAccessToken", accessToken, options).cookie("adminRefreshToken", newRefreshToken, options).json(new ApiResponse(200, {
     accessToken, refreshToken: newRefreshToken
 
   },
     "refresh Token refreshed "))
 })
+const getCurrentAdmin = asyncHandler(async (req, res) => {
+  res.status(200).json(
+    new ApiResponse(200, req.admin, "Admin fetched")
+  );
+});
 
 
-export { registerAdmin, adminLoginHandler, adminLogoutHandler, refreshToken }
+export { registerAdmin, adminLoginHandler, adminLogoutHandler, adminRefreshToken, getCurrentAdmin, checkAdminExist }

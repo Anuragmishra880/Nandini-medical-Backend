@@ -5,10 +5,13 @@ import { AddProduct, deleteProduct, updateProduct, getProductsByCategory,  getSi
 import { upload } from '../Middlewares/multer.js'
 import { authorizeAdmin } from '../Middlewares/adminAuthorization.middleware.js'
 import { verifyJWT } from '../Middlewares/auth.middleware.js'
+import { adminVerifyJWT } from '../Middlewares/adminAuth.middleware.js'
 
 
 router.post('/addProduct',
-    verifyJWT,
+   
+    upload.single('productImage'),
+    adminVerifyJWT,
     authorizeAdmin,
     // upload.fields([
     //     {
@@ -16,7 +19,6 @@ router.post('/addProduct',
     //         maxCount: 1
     //     }
     // ]),
-    upload.single('productImage'),
     AddProduct
 )
 router.get('/', getAllProducts)
@@ -25,13 +27,15 @@ router.get('/category/:category', getProductsByCategory)
 router.get('/:id', getSingleProduct)
 router.put(
     "/:id",
-    verifyJWT,
+    // verifyJWT,
+    adminVerifyJWT,
     authorizeAdmin,
     upload.single('productImage'),
     updateProduct
 );
 router.delete('/:id',
-    verifyJWT,
+    // verifyJWT,
+    adminVerifyJWT,
     authorizeAdmin,
     deleteProduct
 )

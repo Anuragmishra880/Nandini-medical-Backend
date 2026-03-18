@@ -10,7 +10,8 @@ const cartSchema = new mongoose.Schema({
         {
             productId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "Product"
+                ref: "Product",
+                required:true,
             },
 
             quantity: {
@@ -38,7 +39,7 @@ cartSchema.pre("save", async function (next) {
     this.totalPrice = 0;
     this?.items?.forEach((item) => {
         this.totalQuantity += item.quantity;
-        this.totalPrice += item.quantity * item.productId.productPrice;
+        this.totalPrice += item.quantity * (item.productId.productPrice || 0);
     });
 
 
