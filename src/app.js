@@ -3,17 +3,21 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 const app = express()
-
-const allowedOrigins = [
-    "http://localhost:5173",   // user frontend
-    "http://localhost:5174",   // admin frontend
-
-];
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",")
+  : [];
 app.use(cors({
-    // origin: process.env.CORS_ORIGIN,
-    origin: allowedOrigins,
-    credentials: true
-}))
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 // it is uses for accept data from forms
 app.use(express.json({ limit: '16kb' }))
 // it is uses for accept data from URL

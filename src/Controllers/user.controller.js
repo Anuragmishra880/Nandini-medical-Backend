@@ -96,8 +96,7 @@ const loginHandler = asyncHandler(async (req, res) => {
     secure: false,
 
   }
-  // console.log(req.cookies);
-  // console.log(req.userName);
+ 
 
 
 
@@ -109,7 +108,7 @@ const loginHandler = asyncHandler(async (req, res) => {
 })
 
 const logoutHandler = asyncHandler(async (req, res) => {
-  // console.log(req.user)
+  
   await User.findByIdAndUpdate(req.user.id
     , {
       $unset: { refreshToken: 1 }
@@ -157,7 +156,7 @@ const userRefreshToken = asyncHandler(async (req, res) => {
 
 const getAllUsers = asyncHandler(async (req, res) => {
   const user = await User.find()
-  console.log(user.email)
+ 
   if (!user) {
     throw new ApiError(404, "user not found")
   }

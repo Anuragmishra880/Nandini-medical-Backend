@@ -26,7 +26,7 @@ const AddProduct = asyncHandler(async (req, res) => {
 
   //  Cloudinary upload
   const uploadedImage = await uploadOnCloudinary(productImageLocalPath);
-  // console.log("Cloudinary Response:", uploadedImage.secure_url);
+ 
 
   if (!uploadedImage) {
     return res.status(400).json({ message: "Product image upload failed" });
@@ -56,7 +56,7 @@ const AddProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
   const { productStock, productTitle, productPrice, productDescription, category } = req.body
   const { id } = req.params
-  console.log(id)
+  
   if (!id) {
     throw new ApiError(401, "Product ID is required for update")
   }

@@ -122,7 +122,7 @@ const adminLoginHandler = asyncHandler(async (req, res) => {
     secure: false,
 
   }
-  // console.log(req.adminName);
+
 
   return res.status(200).cookie("adminAccessToken", accessToken, options).cookie("adminRefreshToken", refreshToken, options).json(new ApiResponse(200, {
     admin: loggedInAdmin, accessToken, refreshToken
@@ -132,7 +132,7 @@ const adminLoginHandler = asyncHandler(async (req, res) => {
 })
 
 const adminLogoutHandler = asyncHandler(async (req, res) => {
-  // console.log(req.user)
+
   await Admin.findByIdAndUpdate(req.admin.id
     , {
       $unset: { refreshToken: 1 }
