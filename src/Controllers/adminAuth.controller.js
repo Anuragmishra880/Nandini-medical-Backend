@@ -118,10 +118,15 @@ const adminLoginHandler = asyncHandler(async (req, res) => {
 
   const loggedInAdmin = await Admin.findById(admin._id).select('-password -refreshToken')
   const options = {
+    // httpOnly: true,
+    // secure: false,
     httpOnly: true,
-    secure: false,
+    secure: true,          // 🔥 production me
+    sameSite: "None",      // 🔥 MUST for cross-origin
+    maxAge: 7 * 24 * 60 * 60 * 1000
 
   }
+
 
 
   return res.status(200).cookie("adminAccessToken", accessToken, options).cookie("adminRefreshToken", refreshToken, options).json(new ApiResponse(200, {
@@ -140,9 +145,12 @@ const adminLogoutHandler = asyncHandler(async (req, res) => {
     { new: true }
   )
   const options = {
+    // httpOnly: true,
+    // secure: false,
     httpOnly: true,
-    secure: false,
-
+    secure: true,          // 🔥 production me
+    sameSite: "None",      // 🔥 MUST for cross-origin
+    maxAge: 7 * 24 * 60 * 60 * 1000
   }
   return res
     .status(200)
@@ -167,9 +175,12 @@ const adminRefreshToken = asyncHandler(async (req, res) => {
 
   const { accessToken, refreshToken: newRefreshToken } = await generateAccessTokenAndRefreshToken(admin._id)
   const options = {
+    // httpOnly: true,
+    // secure: false,
     httpOnly: true,
-    secure: false,
-
+    secure: true,          // 🔥 production me
+    sameSite: "None",      // 🔥 MUST for cross-origin
+    maxAge: 7 * 24 * 60 * 60 * 1000
   }
   return res.status(200).cookie("adminAccessToken", accessToken, options).cookie("adminRefreshToken", newRefreshToken, options).json(new ApiResponse(200, {
     accessToken, refreshToken: newRefreshToken

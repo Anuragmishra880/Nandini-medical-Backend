@@ -92,11 +92,14 @@ const loginHandler = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(user._id).select('-password -refreshToken')
   const options = {
+    // httpOnly: true,
+    // secure: false,
     httpOnly: true,
-    secure: false,
-
+    secure: true,          // 🔥 production me
+    sameSite: "None",      // 🔥 MUST for cross-origin
+    maxAge: 7 * 24 * 60 * 60 * 1000
   }
- 
+
 
 
 
@@ -108,7 +111,7 @@ const loginHandler = asyncHandler(async (req, res) => {
 })
 
 const logoutHandler = asyncHandler(async (req, res) => {
-  
+
   await User.findByIdAndUpdate(req.user.id
     , {
       $unset: { refreshToken: 1 }
@@ -116,9 +119,12 @@ const logoutHandler = asyncHandler(async (req, res) => {
     { new: true }
   )
   const options = {
+    // httpOnly: true,
+    // secure: false,
     httpOnly: true,
-    secure: false,
-
+    secure: true,          // 🔥 production me
+    sameSite: "None",      // 🔥 MUST for cross-origin
+    maxAge: 7 * 24 * 60 * 60 * 1000
   }
   return res
     .status(200)
@@ -143,9 +149,12 @@ const userRefreshToken = asyncHandler(async (req, res) => {
 
   const { accessToken, refreshToken: newRefreshToken } = await generateAccessTokenAndRefreshToken(user._id)
   const options = {
+    // httpOnly: true,
+    // secure: false,
     httpOnly: true,
-    secure: false,
-
+    secure: true,          // 🔥 production me
+    sameSite: "None",      // 🔥 MUST for cross-origin
+    maxAge: 7 * 24 * 60 * 60 * 1000
   }
   return res.status(200).cookie("userAccessToken", accessToken, options).cookie("userRefreshToken", newRefreshToken, options).json(new ApiResponse(200, {
     accessToken, refreshToken: newRefreshToken
@@ -156,7 +165,7 @@ const userRefreshToken = asyncHandler(async (req, res) => {
 
 const getAllUsers = asyncHandler(async (req, res) => {
   const user = await User.find()
- 
+
   if (!user) {
     throw new ApiError(404, "user not found")
   }
